@@ -1,0 +1,11 @@
+{
+  "owner": "hartlco",
+  "slug": "miniflux-news",
+  "displayName": "Miniflux News",
+  "latest": {
+    "version": "0.1.0",
+    "publishedAt": 1769158886872,
+    "commit": null
+  },
+  "history": []
+}
