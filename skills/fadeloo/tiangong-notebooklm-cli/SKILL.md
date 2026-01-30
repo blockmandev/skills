@@ -1,9 +1,9 @@
 ---
 name: notebooklm
-description: NotebookLM CLI automation for this workspace: authenticate/login, list/create/use/rename/delete notebooks, ask/configure chat, manage sources/notes/sharing, research status, and generate/download artifacts via `uv run tiangong-workspace notebooklm ...`. Use when tasks involve NotebookLM notebooks, sources, notes, sharing, research, or generated outputs (slide decks, flashcards, reports, etc.).
-homepage: https://notebooklm.google.com
-metadata: {"clawdbot":{"emoji":"NLM","requires":{"bins":["node","uv","notebooklm"],"env":[]},"notes":"Requires notebooklm CLI authentication and access to this repo's uv environment."}}
+description: "NotebookLM CLI automation (standalone): authenticate/login, list/create/use/rename/delete notebooks, ask/configure chat, manage sources/notes/sharing, research status, and generate/download artifacts via `uv tool run --from notebooklm-py notebooklm ...`. Use when tasks involve NotebookLM notebooks, sources, notes, sharing, research, or generated outputs (slide decks, flashcards, reports, etc.)."
 ---
+
+> Requires: node + uv. Uses `notebooklm-py` via `uv tool run` (no project dependency).
 
 # NotebookLM
 
@@ -119,8 +119,7 @@ node {baseDir}/scripts/notebooklm.mjs skill install
 
 ## Notes
 
+- Long-running generations are normal (often 20+ minutes). Do **not** retry unless there is a clear error; prefer to wait longer.
 - Use `--json` for machine-readable output.
 - Use `--exec-timeout <seconds>` when a NotebookLM command might hang; `--timeout` is reserved for NotebookLM wait/poll durations.
-- The wrapper script searches upward for `pyproject.toml` containing `[tool.tiangong.workspace]`.
-- Override repo detection with `TIANGONG_WORKSPACE_ROOT=/path/to/repo`.
 - If the NotebookLM CLI is not authenticated, run `notebooklm login` or `notebooklm status` and follow its login instructions.
