@@ -1,42 +1,42 @@
 ---
 name: gita-sotd
 description: >
-  Get the Bhagavad Gita Sloka of the Day (SOTD) or fetch specific verses.
-  Use when the user asks for a Gita verse, sloka, daily wisdom from the Gita,
+  Get the Bhagavad Gita Slok of the Day (SOTD) or fetch specific verses.
+  Use when the user asks for a Gita verse, slok, daily wisdom from the Gita,
   Hindu scripture quotes, or anything related to the Bhagavad Gita text.
   Supports Sanskrit text, transliteration, and translations from multiple scholars.
 ---
 
-# Bhagavad Gita Sloka of the Day
+# Bhagavad Gita Slok of the Day
 
 Fetch verses from the Bhagavad Gita using the free [vedicscriptures API](https://vedicscriptures.github.io/).
 
 ## Usage
 
-Run the script to get a sloka:
+Run the script to get a slok:
 
 ```bash
-# Daily sloka (deterministic, changes each day)
-python3 scripts/fetch_sloka.py
+# Daily slok (deterministic, changes each day)
+python3 scripts/fetch_slok.py
 
 # Specific verse
-python3 scripts/fetch_sloka.py --chapter 2 --verse 47
+python3 scripts/fetch_slok.py --chapter 2 --verse 47
 
 # Random verse
-python3 scripts/fetch_sloka.py --random
+python3 scripts/fetch_slok.py --random
 
 # Different translator (prabhu, siva, purohit, gambir, chinmay, etc.)
-python3 scripts/fetch_sloka.py --translator siva
+python3 scripts/fetch_slok.py --translator siva
 
 # Raw JSON output
-python3 scripts/fetch_sloka.py --json
+python3 scripts/fetch_slok.py --json
 ```
 
 ## Available Translators
 
 - `prabhu` - A.C. Bhaktivedanta Swami Prabhupada (default)
 - `siva` - Swami Sivananda
-- `purohit` - Shri Purohit Swami  
+- `purohit` - Shri Purohit Swami
 - `gambir` - Swami Gambirananda
 - `chinmay` - Swami Chinmayananda
 - `tej` - Swami Tejomayananda (Hindi)
@@ -46,6 +46,7 @@ python3 scripts/fetch_sloka.py --json
 ## Output Format
 
 The script outputs formatted markdown with:
+
 - Chapter and verse reference
 - Sanskrit text (optional)
 - Transliteration
