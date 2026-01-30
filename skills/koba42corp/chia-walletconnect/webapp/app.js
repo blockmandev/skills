@@ -1,3 +1,24 @@
+// Import WalletConnect
+import { SignClient } from 'https://unpkg.com/@walletconnect/sign-client@2.11.0/dist/index.es.js';
+import { getSdkError } from 'https://unpkg.com/@walletconnect/utils@2.11.0/dist/index.es.js';
+
+// Version: 1.0.1 - Build: 2026-01-29T21:21:00 - Force clear localStorage to prevent stale sessions
+// Clear all WalletConnect storage on load to prevent stale sessions
+// This ensures a fresh start every time the Mini App opens
+try {
+  console.log('🧹 [v1.0.1] Clearing WalletConnect storage...');
+  const keys = Object.keys(localStorage);
+  keys.forEach(key => {
+    if (key.includes('wc@2') || key.includes('walletconnect')) {
+      localStorage.removeItem(key);
+      console.log('  ✓ Removed:', key);
+    }
+  });
+  console.log('✅ Storage cleared - ready for fresh connection');
+} catch (e) {
+  console.warn('⚠️ Could not clear storage:', e);
+}
+
 // Telegram Web App API
 const tg = window.Telegram.WebApp;
 
@@ -50,9 +71,6 @@ async function initWalletConnect() {
   try {
     showLoading('Initializing WalletConnect...');
     
-    // Import SignClient from global
-    const { SignClient } = window.WalletConnectSignClient;
-    
     signClient = await SignClient.init({
       projectId: WALLETCONNECT_PROJECT_ID,
       metadata: {
@@ -65,13 +83,8 @@ async function initWalletConnect() {
     
     console.log('✅ WalletConnect initialized');
     
-    // Check for existing sessions
-    const sessions = signClient.session.getAll();
-    if (sessions.length > 0) {
-      console.log('📱 Found existing session, reconnecting...');
-      currentSession = sessions[0];
-      await handleSessionConnected(currentSession);
-    }
+    // Storage was cleared on startup, so no existing sessions
+    console.log('📱 Ready for fresh connection');
     
     hideLoading();
   } catch (error) {
@@ -150,7 +163,10 @@ async function handleSessionConnected(session) {
     
     // Get public key using CHIP-0002
     try {
-      const pubKeyResult = await signClient.request({
+      console.log('🔍 Requesting public keys...');
+      
+      // Add timeout to prevent hanging on stale sessions
+      const pubKeyPromise = signClient.request({
         topic: session.topic,
         chainId: CHIA_CHAIN,
         request: {
@@ -162,13 +178,34 @@ async function handleSessionConnected(session) {
         }
       });
       
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Public key request timed out')), 5000)
+      );
+      
+      const pubKeyResult = await Promise.race([pubKeyPromise, timeoutPromise]);
+      
+      console.log('📦 Public key result:', pubKeyResult);
+      
       if (pubKeyResult && pubKeyResult.length > 0) {
-        currentPublicKey = pubKeyResult[0];
+        // Handle both string format and object format
+        if (typeof pubKeyResult[0] === 'string') {
+          currentPublicKey = pubKeyResult[0];
+        } else if (pubKeyResult[0].publicKey) {
+          currentPublicKey = pubKeyResult[0].publicKey;
+        }
         console.log('🔑 Public key:', currentPublicKey);
       }
+      
+      if (!currentPublicKey) {
+        console.warn('⚠️ No public key in response, trying alternative method...');
+        // Try getting from session accounts
+        const accountData = session.namespaces.chia?.accounts[0];
+        console.log('📱 Account data:', accountData);
+      }
     } catch (pkError) {
-      console.warn('⚠️ Could not fetch public key:', pkError);
-      // Continue without public key
+      console.error('❌ Could not fetch public key:', pkError);
+      console.error('Error details:', JSON.stringify(pkError, null, 2));
+      // Continue without public key - we'll handle this in signing
     }
     
     // Update UI
@@ -222,6 +259,18 @@ async function signChallenge() {
       throw new Error('No active session or challenge');
     }
     
+    if (!currentPublicKey) {
+      showError('Public key not available. This is required for CHIP-0002 signing.\n\nSage Wallet may not support the chip0002_getPublicKeys method.\n\nPlease ensure you are using the latest version of Sage Wallet.');
+      elements.signBtn.disabled = false;
+      hideLoading();
+      return;
+    }
+    
+    console.log('✍️ Requesting signature with:', {
+      message: challengeData.message,
+      publicKey: currentPublicKey
+    });
+    
     // Request signature using CHIP-0002
     const signature = await signClient.request({
       topic: currentSession.topic,
@@ -229,7 +278,8 @@ async function signChallenge() {
       request: {
         method: 'chip0002_signMessage',
         params: {
-          message: challengeData.message
+          message: challengeData.message,
+          publicKey: currentPublicKey
         }
       }
     });
@@ -261,22 +311,34 @@ async function verifySignature(signature) {
       timestamp: challengeData.timestamp
     };
     
-    // Send data back to Telegram bot
-    tg.sendData(JSON.stringify(verificationData));
+    // Send to verification API (serverless function)
+    const apiResponse = await fetch('/api/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(verificationData)
+    });
     
-    // Show success UI (bot will handle actual verification)
+    const apiResult = await apiResponse.json();
+    
+    if (!apiResult.verified) {
+      throw new Error(apiResult.error || 'Verification failed');
+    }
+    
+    const verifyCode = apiResult.code;
+    
+    // Show success UI
     showResult({
       verified: true,
-      message: 'Signature submitted successfully!',
-      details: `Your wallet verification request has been sent.\n\nAddress: ${currentAddress}\n\nThe bot will confirm verification shortly.`
+      message: '✅ Wallet Verified Successfully!',
+      details: `**Address:** ${currentAddress}\n\n**Verification Code:** ${verifyCode}\n\nYour Chia wallet has been cryptographically verified!\n\n🤖 The bot has been notified and will confirm shortly.\n\nYou can close this window now.`
     });
     
     hideLoading();
     
-    // Close the web app after 3 seconds
+    // Auto-close after 5 seconds
     setTimeout(() => {
       tg.close();
-    }, 3000);
+    }, 5000);
     
   } catch (error) {
     console.error('❌ Verification failed:', error);
@@ -355,5 +417,7 @@ function isMobile() {
 
 // Initialize on load
 window.addEventListener('load', () => {
+  console.log('🌱 Chia Wallet Verification Mini App - v1.0.1');
+  console.log('📅 Build:', '2026-01-29T21:21:00');
   initWalletConnect();
 });

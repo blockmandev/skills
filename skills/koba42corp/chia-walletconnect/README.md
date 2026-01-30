@@ -1,524 +1,404 @@
-# 🌱 Chia WalletConnect - Telegram Signature Verification
+# Chia WalletConnect - Telegram Mini App Verification
 
-**Verify Chia wallet ownership via Telegram using WalletConnect and Sage Wallet.**
+**Status:** ✅ Fully Functional Template  
+**Version:** 1.0.0  
+**Author:** Koba42 Corp  
+**License:** MIT
 
-A Telegram Web App (Mini App) that enables seamless wallet signature verification for Chia blockchain addresses through WalletConnect integration with Sage Wallet, powered by MintGarden's signature verification API.
+## Overview
 
----
+A complete Telegram Mini App for cryptographic Chia wallet verification via WalletConnect and Sage Wallet. Users can prove wallet ownership through CHIP-0002 compliant signatures, verified against the MintGarden API.
 
-## ✨ Features
+**This skill is a working template** - it successfully connects wallets, generates signatures, and verifies them. What it *doesn't* include is the post-verification logic (what to do once someone is verified). That's where you come in!
 
-- 🔗 **WalletConnect v2 Integration** — Industry-standard wallet connection protocol
-- 📱 **Telegram Mini App** — Native in-app experience
-- 🔐 **Signature Verification** — Cryptographic proof of wallet ownership
-- ✅ **MintGarden API** — Trusted signature validation
-- 🎯 **CHIP-0002 Support** — Sage Wallet compatibility
-- 💚 **Mobile-First** — Optimized for Telegram mobile clients
-- 🚀 **Zero Manual Copy/Paste** — Seamless user experience
+## What's Included
 
----
+### ✅ Fully Working Components
 
-## 🏗️ Architecture
+1. **Telegram Mini App** (webapp/)
+   - WalletConnect v2 integration
+   - Sage Wallet support via QR code
+   - CHIP-0002 compliant message signing
+   - Public key fetching
+   - Challenge message generation
+   - Clean UI with loading states
+
+2. **Verification API** (webapp/api/verify.js)
+   - Vercel serverless function
+   - MintGarden signature verification
+   - Telegram Bot API integration
+   - Sends success messages to users
+
+3. **Documentation**
+   - Complete setup guides
+   - Integration examples
+   - Troubleshooting tips
+   - Feature request for Clawdbot
+
+### ❌ What You Need to Build
+
+**Post-Verification Handler** - What happens after verification succeeds?
+
+Examples:
+- Grant access to private Telegram groups
+- Check NFT ownership for gating
+- Airdrop eligibility tracking
+- DAO voting authentication
+- Role assignment in Discord
+- Database record creation
+- Loyalty program enrollment
+
+## Architecture
 
 ```
-┌─────────────────┐
-│  Telegram Bot   │
-│ (Clawdbot)      │
-└────────┬────────┘
-         │ /verify command
-         │ Opens Web App →
-         ▼
-┌─────────────────────────────┐
-│   Telegram Mini App         │
-│   (Hosted Web Frontend)     │
-│                             │
-│  ┌──────────────────────┐  │
-│  │  WalletConnect v2    │  │
-│  │  Sign Client         │  │
-│  └──────────┬───────────┘  │
-│             │               │
-│             │ Connect & Sign
-│             ▼               │
-│      ┌──────────────┐      │
-│      │ Sage Wallet  │      │
-│      │   (Mobile)   │      │
-│      └──────┬───────┘      │
-│             │               │
-│             │ Returns signature
-│             ▼               │
-│  ┌──────────────────────┐  │
-│  │  Send to Bot via     │  │
-│  │  Telegram.sendData() │  │
-│  └──────────────────────┘  │
-└─────────────────────────────┘
-              │
-              │ web_app_data
-              ▼
-┌─────────────────────────┐
-│  Bot Webhook Handler    │
-│  (Verifies signature)   │
-└────────┬────────────────┘
-         │
-         │ POST /verify_signature
-         ▼
-┌─────────────────────────┐
-│  MintGarden API         │
-│  (Signature validation) │
-└─────────────────────────┘
+┌─────────────┐
+│   User      │
+│  (Telegram) │
+└──────┬──────┘
+       │ Opens Mini App
+       ▼
+┌─────────────────────┐
+│   Mini App (Vercel) │
+│  WalletConnect UI   │
+└──────┬──────────────┘
+       │ User signs message
+       ▼
+┌──────────────────────┐
+│ API Endpoint         │
+│ /api/verify          │
+│ - Verify signature   │
+│ - Send Telegram msg  │
+└──────┬───────────────┘
+       │
+       ▼
+┌──────────────────────┐
+│ Telegram Chat        │
+│ "✅ Wallet Verified!"│
+└──────────────────────┘
 ```
 
----
+## Quick Start
 
-## 🚀 Quick Start
-
-### Installation
+### 1. Deploy the Mini App
 
 ```bash
-# Install skill via ClawdHub
-clawdhub install chia-walletconnect
+cd skills/chia-walletconnect/webapp
 
 # Install dependencies
-cd skills/chia-walletconnect
 npm install
 
-# Make CLI executable
-chmod +x cli.js
+# Add bot token to Vercel
+vercel env add TELEGRAM_BOT_TOKEN production
+# Paste your token: 123456:ABC-DEF...
+
+# Deploy to production
+vercel --prod
 ```
 
-### Local Development
+You'll get a URL like: `https://your-app.vercel.app`
 
-```bash
-# Start the development server
-npm start
-# Server runs on http://localhost:3000
+### 2. Register with BotFather
 
-# Test in browser
-open http://localhost:3000
-```
-
-### CLI Usage
-
-```bash
-# Generate a challenge
-node cli.js challenge xch1abc... telegram_user_123
-
-# Verify a signature
-node cli.js verify xch1abc... "message" "signature" "pubkey"
-
-# Validate address format
-node cli.js validate xch1abc...
-
-# Start web server
-node cli.js server
-```
-
----
-
-## 📱 Telegram Bot Integration
-
-### Step 1: Deploy Web App
-
-Deploy the `webapp/` folder to a public HTTPS URL:
-
-**Option A: Vercel**
-```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-cd webapp
-vercel
-
-# Copy the deployment URL (e.g., https://your-app.vercel.app)
-```
-
-**Option B: Netlify**
-```bash
-# Install Netlify CLI
-npm i -g netlify-cli
-
-# Deploy
-cd webapp
-netlify deploy --prod
-
-# Copy the deployment URL
-```
-
-**Option C: Your Own Server**
-```bash
-# Run the server on your VPS
-npm start
-
-# Use ngrok for testing
-ngrok http 3000
-```
-
-### Step 2: Register with BotFather
-
-1. Open Telegram and message [@BotFather](https://t.me/BotFather)
-2. Send `/newapp` or `/editapp`
+1. Message [@BotFather](https://t.me/BotFather) on Telegram
+2. Send `/mybots`
 3. Select your bot
-4. **Web App URL:** Enter your deployed URL (e.g., `https://your-app.vercel.app`)
-5. **Short Name:** `verify` (or any unique identifier)
+4. Choose **"Bot Settings"** → **"Menu Button"**
+5. Button text: `🌱 Verify Wallet`
+6. Web App URL: `https://your-app.vercel.app`
 
-### Step 3: Add Bot Command
+### 3. Test It
 
-Create a `/verify` command in your bot:
+Open your bot in Telegram, tap the menu button (≡), and complete a wallet verification!
 
-```javascript
-// In your Clawdbot skill or bot handler
+## How It Works
 
-bot.onText(/\/verify/, async (msg) => {
-  const chatId = msg.chat.id;
-  
-  // Send inline button to launch Web App
-  bot.sendMessage(chatId, 'Click below to verify your Chia wallet:', {
-    reply_markup: {
-      inline_keyboard: [[
-        {
-          text: '🌱 Verify Wallet',
-          web_app: { url: 'https://your-app.vercel.app' }
-        }
-      ]]
-    }
-  });
-});
-```
+### Step 1: User Opens Mini App
+- User taps button in Telegram
+- Mini App loads in-app browser
+- WalletConnect initializes
 
-### Step 4: Handle Web App Data
+### Step 2: Connect Wallet
+- QR code displayed
+- User scans with Sage Wallet
+- WalletConnect session established
+- Public key fetched via `chip0002_getPublicKeys`
 
-Listen for signature data returned from the Web App:
+### Step 3: Sign Challenge
+- Challenge message generated (includes nonce, timestamp, user ID)
+- User signs via `chip0002_signMessage`
+- Signature returned to Mini App
 
-```javascript
-// Handle web_app_data callback
-bot.on('web_app_data', async (msg) => {
-  const chatId = msg.chat.id;
-  const data = JSON.parse(msg.web_app_data.data);
-  
-  const { address, message, signature, publicKey, userId } = data;
-  
-  console.log(`🔐 Received signature from ${address}`);
-  
-  // Verify signature with MintGarden API
-  const { verifySignature } = require('./lib/verify');
-  const result = await verifySignature(address, message, signature, publicKey);
-  
-  if (result.verified) {
-    bot.sendMessage(chatId, `✅ Wallet verified!\n\nAddress: ${address}`);
-    
-    // Store verification in your database
-    // await saveVerification(userId, address);
-    
-  } else {
-    bot.sendMessage(chatId, `❌ Verification failed: ${result.error}`);
-  }
-});
-```
+### Step 4: Verify Signature
+- Mini App POSTs to `/api/verify`
+- API verifies signature via MintGarden
+- Success message sent to Telegram chat
+- User sees confirmation
 
----
+### Step 5: Your Logic Here! 🎯
+This is where you add your use case:
+- Check wallet NFTs
+- Grant group access
+- Record verification
+- Trigger workflows
+- Update permissions
 
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env` file:
-
-```env
-# Server configuration
-PORT=3000
-NODE_ENV=production
-
-# WalletConnect Project ID
-# Get yours at https://cloud.walletconnect.com
-WALLETCONNECT_PROJECT_ID=6d377259062295c0f6312b4f3e7a5d9b
-
-# Optional: MintGarden API
-MINTGARDEN_API_URL=https://api.mintgarden.io
-
-# Optional: Your backend API
-BACKEND_API_URL=https://your-backend.com/api
-```
-
-### WalletConnect Project ID
-
-The included Project ID (`6d377259062295c0f6312b4f3e7a5d9b`) is from the Dracattus reference implementation. For production:
-
-1. Visit [WalletConnect Cloud](https://cloud.walletconnect.com)
-2. Create a new project
-3. Copy your Project ID
-4. Update in `webapp/app.js`:
-
-```javascript
-const WALLETCONNECT_PROJECT_ID = 'your-project-id-here';
-```
-
----
-
-## 🛠️ API Reference
-
-### MintGarden Signature Verification
-
-**Endpoint:** `POST https://api.mintgarden.io/address/verify_signature`
-
-**Request:**
-```json
-{
-  "address": "xch1abc...",
-  "message": "Verify ownership of...",
-  "signature": "signature_hex",
-  "pubkey": "public_key_hex"
-}
-```
-
-**Response:**
-```json
-{
-  "verified": true
-}
-```
-
-### CHIP-0002 Methods
-
-The skill uses these WalletConnect methods for Sage Wallet:
-
-| Method | Description |
-|--------|-------------|
-| `chip0002_getPublicKeys` | Fetch wallet public keys |
-| `chip0002_signMessage` | Sign a message with wallet |
-| `chia_getCurrentAddress` | Get current receive address |
-
----
-
-## 📂 Project Structure
+## Project Structure
 
 ```
 chia-walletconnect/
-├── webapp/                   # Telegram Web App frontend
-│   ├── index.html           # Main UI
-│   ├── app.js               # WalletConnect logic
-│   └── styles.css           # Styling
-├── lib/                      # Core libraries
-│   ├── challenge.js         # Challenge generation
-│   ├── verify.js            # MintGarden API client
-│   └── telegram.js          # Telegram Web App helpers
-├── server/                   # Optional backend
-│   └── index.js             # Express server for webhooks
-├── cli.js                    # CLI interface
-├── package.json             # Dependencies
-├── SKILL.md                 # Clawdbot skill documentation
-└── README.md                # This file
+├── webapp/                    # Telegram Mini App
+│   ├── api/
+│   │   └── verify.js         # Serverless verification endpoint
+│   ├── app.js                # Main Mini App logic
+│   ├── index.html            # UI
+│   ├── styles.css            # Styling
+│   ├── vite.config.js        # Build config
+│   └── package.json          # Dependencies
+│
+├── handlers/                  # Node.js verification handlers
+│   ├── web-app-data.js       # Signature verification logic
+│   └── verify-command.js     # /verify command handler
+│
+├── SKILL.md                   # Skill documentation
+├── README.md                  # This file
+├── SOLUTION.md                # Technical solution overview
+├── STATUS.md                  # Project status
+└── INTEGRATION.md             # Integration guide
 ```
 
----
+## Configuration
 
-## 🧪 Testing
+### Environment Variables (Vercel)
 
-### Test Locally
+Required:
+- `TELEGRAM_BOT_TOKEN` - Your Telegram bot token from BotFather
 
-1. **Start server:**
-   ```bash
-   npm start
-   ```
+### Telegram Bot Setup
 
-2. **Open in browser:**
-   ```
-   http://localhost:3000
-   ```
+1. Get bot token from [@BotFather](https://t.me/BotFather)
+2. Register Mini App URL with BotFather
+3. Set menu button or inline keyboard
 
-3. **Test WalletConnect:**
-   - Click "Connect Sage Wallet"
-   - Copy the URI or scan QR code
-   - Open Sage Wallet → paste URI
-   - Approve connection
-   - Sign the challenge message
+## Use Cases
 
-### Test with Telegram
+### NFT-Gated Telegram Group
 
-1. **Use ngrok for local testing:**
-   ```bash
-   ngrok http 3000
-   ```
+```javascript
+// In your bot handler, after verification:
+const { address, verified } = verificationResult;
 
-2. **Update BotFather Web App URL** to ngrok URL
-
-3. **Send `/verify` in your bot**
-
-4. **Click the inline button**
-
-5. **Complete verification flow**
-
----
-
-## 🔐 Security Considerations
-
-### ✅ What's Secure
-
-- **Challenge Nonces** — Prevents replay attacks
-- **Timestamp Validation** — Challenges expire after 5 minutes
-- **MintGarden Verification** — Cryptographic signature validation
-- **HTTPS Required** — Telegram enforces HTTPS for Web Apps
-- **No Private Keys** — Never requests or stores private keys
-
-### ⚠️ Important Notes
-
-1. **Store Verifications Securely**
-   - Use encrypted database
-   - Don't log signatures/public keys
-   - Implement rate limiting
-
-2. **Validate User Identity**
-   - Link Telegram user ID to verified address
-   - Prevent address spoofing
-   - Implement cooldown periods
-
-3. **Production Checklist**
-   - [ ] Use your own WalletConnect Project ID
-   - [ ] Enable CORS only for your domain
-   - [ ] Implement rate limiting on verification endpoint
-   - [ ] Log verification attempts for auditing
-   - [ ] Use environment variables for secrets
-   - [ ] Deploy behind CDN for DDoS protection
-
----
-
-## 💡 Use Cases
-
-### 1. **NFT Gated Chats**
-Verify users own a specific NFT before granting access to Telegram groups.
-
-### 2. **Airdrop Eligibility**
-Verify wallet ownership before distributing tokens.
-
-### 3. **Authentication**
-Use wallet as login credential (Web3-style auth).
-
-### 4. **Proof of Holdings**
-Verify users hold a minimum XCH balance or specific CATs.
-
-### 5. **DAO Voting**
-Authenticate voters based on token holdings.
-
----
-
-## 🐛 Troubleshooting
-
-### Problem: WalletConnect URI Not Working
-
-**Solutions:**
-1. Check Sage Wallet supports WalletConnect v2
-2. Try manual URI paste instead of QR scan
-3. Ensure Sage is on the latest version
-4. Check console for connection errors
-
-### Problem: Signature Verification Fails
-
-**Solutions:**
-1. Ensure correct message format (exact match)
-2. Verify public key matches address
-3. Check MintGarden API status
-4. Confirm signature encoding (hex/base64)
-
-### Problem: Web App Doesn't Load
-
-**Solutions:**
-1. Verify HTTPS deployment (Telegram requires SSL)
-2. Check CORS headers
-3. Test URL directly in browser
-4. Review Telegram Bot logs
-
-### Problem: "No Public Key Available"
-
-**Solutions:**
-1. Sage may not expose public key via WalletConnect
-2. Try alternative method (signature still works)
-3. Public key is optional for verification
-
----
-
-## 🔄 Workflow Diagram
-
-```
-User              Telegram           Web App          Sage Wallet      MintGarden
- │                   │                  │                   │               │
- ├─ /verify ────────>│                  │                   │               │
- │                   ├─ Web App button >│                   │               │
- │                   │                  ├─ WC connect ─────>│               │
- │                   │                  │<── approve ───────┤               │
- │                   │                  ├─ sign request ───>│               │
- │                   │                  │<── signature ─────┤               │
- │                   │<─ sendData() ────┤                   │               │
- │                   ├──────────────────────── verify ──────────────────────>│
- │                   │<──────────────────────── verified ────────────────────┤
- │<─ ✅ Verified ────┤                  │                   │               │
- │                   │                  │                   │               │
+if (verified) {
+  // Check NFT ownership
+  const nfts = await fetchNFTsForAddress(address);
+  const hasRequiredNFT = nfts.some(nft => 
+    nft.collection_id === 'col1required...'
+  );
+  
+  if (hasRequiredNFT) {
+    await inviteUserToGroup(userId, groupId);
+    await sendMessage(userId, '🎉 Access granted!');
+  } else {
+    await sendMessage(userId, '❌ You need a Wojak NFT to join.');
+  }
+}
 ```
 
----
+### Airdrop Eligibility
 
-## 📊 Performance
+```javascript
+if (verified) {
+  // Store verification in database
+  await db.verifications.insert({
+    telegram_user_id: userId,
+    wallet_address: address,
+    verified_at: Date.now()
+  });
+  
+  // Check eligibility
+  const eligible = await checkAirdropEligibility(address);
+  
+  if (eligible) {
+    await sendMessage(userId, '✅ You qualify for the airdrop!');
+  }
+}
+```
 
-### Metrics
+### DAO Voting Authentication
 
-| Stage | Time |
-|-------|------|
-| WalletConnect Init | ~1-2s |
-| Connection Approval | User-dependent |
-| Signature Request | ~2-5s |
-| MintGarden Verification | ~0.5-1s |
-| **Total (optimal)** | **~5-10s** |
+```javascript
+if (verified) {
+  // Link wallet to Telegram user
+  await dao.linkWallet(userId, address);
+  
+  // Check voting power
+  const power = await dao.getVotingPower(address);
+  
+  await sendMessage(userId, 
+    `✅ Wallet linked!\n\nVoting power: ${power} tokens`
+  );
+}
+```
 
-### Optimization Tips
+## Customization
 
-1. **Cache WalletConnect sessions** — Reconnect faster on repeat use
-2. **Batch verifications** — Verify multiple addresses at once
-3. **Implement retry logic** — Handle transient network errors
-4. **Use CDN** — Serve static assets faster
+### Change Challenge Message Format
 
----
+Edit `webapp/app.js`:
 
-## 🤝 Contributing
+```javascript
+function generateChallenge() {
+  const message = `Your custom message here:\n${currentAddress}`;
+  // ...
+}
+```
 
-Contributions welcome! Please:
+### Customize Success Message
 
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new features
-4. Submit a pull request
+Edit `webapp/api/verify.js`:
 
----
+```javascript
+const telegramMessage = `
+✅ Custom Success Message!
 
-## 📜 License
+Address: ${address}
+Your custom info here...
+`;
+```
 
-**MIT License** — Koba42 Corp
+### Add Custom Verification Logic
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software.
+Edit `webapp/api/verify.js` after signature verification:
 
----
+```javascript
+if (result.verified) {
+  // Your custom logic here
+  await yourCustomFunction(address, userId);
+  
+  // Then send Telegram message
+  await sendTelegramMessage(userId, 'Success!');
+}
+```
 
-## 🔗 Links
+## Security Considerations
 
-- **MintGarden API:** https://api.mintgarden.io/docs
-- **WalletConnect:** https://docs.walletconnect.com/
-- **Telegram Web Apps:** https://core.telegram.org/bots/webapps
-- **Sage Wallet:** https://www.sagewallet.io/
-- **CHIP-0002:** https://github.com/Chia-Network/chips/blob/main/CHIPs/chip-0002.md
+✅ **What's Secure**
+- Signatures verified cryptographically
+- Bot token stored server-side (Vercel env)
+- Nonces prevent replay attacks
+- Timestamps expire after 5 minutes
+- No private keys requested or stored
 
----
+⚠️ **What You Should Add**
+- Rate limiting on verification endpoint
+- User ID → wallet address mapping in database
+- Verification expiry/re-verification logic
+- Allowlist/denylist for addresses
+- Logging and monitoring
 
-## 🌟 Credits
+## Known Limitations
+
+### Clawdbot Integration
+
+Clawdbot doesn't currently support Telegram's `web_app_data` callbacks. This skill works around it by:
+1. Using a serverless function to verify signatures
+2. Sending success messages via Bot API
+3. The bot receives messages normally
+
+See `CLAWDBOT-FEATURE-REQUEST.md` for details on the missing feature.
+
+### Browser Compatibility
+
+- Requires Telegram app (web version has limitations)
+- Best on mobile (Sage Wallet integration)
+- Desktop users can scan QR with mobile Sage
+
+## Troubleshooting
+
+### Mini App Won't Open
+- Verify HTTPS URL with BotFather
+- Check URL is publicly accessible
+- Test URL directly in browser
+
+### QR Code Won't Scan
+- Ensure Sage Wallet is latest version
+- Check WalletConnect Project ID is valid
+- Try manual URI paste in Sage
+
+### Signature Verification Fails
+- Confirm MintGarden API is operational
+- Verify message format matches exactly
+- Check public key is included in signing request
+
+### No Message in Telegram
+- Check Vercel function logs
+- Verify `TELEGRAM_BOT_TOKEN` is set
+- Confirm bot has permission to message user
+
+## Development
+
+### Local Testing
+
+```bash
+cd webapp
+npm install
+npm run dev
+```
+
+### View Logs
+
+```bash
+# Vercel logs (requires deployment URL)
+vercel logs https://your-deployment-url.vercel.app
+```
+
+### Deploy
+
+```bash
+vercel --prod
+```
+
+## What's Next?
+
+This skill is **production-ready** for the verification flow. To make it useful, add:
+
+1. **Storage** - Database to track verifications
+2. **Business Logic** - What to do with verified wallets
+3. **Admin Panel** - Manage verifications
+4. **Analytics** - Track usage
+5. **Rate Limiting** - Prevent abuse
+
+## Contributing
+
+This skill is a template - fork it, customize it, build amazing things!
+
+Ideas for improvements:
+- Multi-chain support (beyond Chia)
+- Batch verification
+- Verification expiry
+- Web dashboard
+- Analytics integration
+
+## Credits
 
 **Built by:** Koba42 Corp  
-**Inspired by:** Dracattus Web App WalletConnect implementation  
-**Powered by:** MintGarden API, WalletConnect, Sage Wallet, Telegram Bot API
+**Powered by:**
+- [WalletConnect](https://walletconnect.com/) - Wallet connection protocol
+- [Sage Wallet](https://www.sagewallet.io/) - Chia wallet
+- [MintGarden](https://mintgarden.io/) - Signature verification API
+- [Vercel](https://vercel.com/) - Serverless hosting
+- [Telegram](https://telegram.org/) - Messaging platform
+
+## License
+
+MIT License - See LICENSE file for details
+
+## Support
+
+- **Documentation:** See `SKILL.md` for detailed usage
+- **Technical Details:** See `SOLUTION.md` for architecture
+- **Integration:** See `INTEGRATION.md` for Telegram setup
+- **Status:** See `STATUS.md` for current state
 
 ---
 
-<div align="center">
-
-**🌱 Verify with confidence. Own with proof. 🌱**
-
-[![ClawdHub](https://img.shields.io/badge/ClawdHub-chia--walletconnect-green)](https://clawdhub.com)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![WalletConnect](https://img.shields.io/badge/WalletConnect-v2-orange)](https://walletconnect.com)
-
-</div>
+**Ready to verify wallets?** Deploy the Mini App and start building your use case! 🌱🚀

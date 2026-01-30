@@ -1,12 +1,30 @@
 ---
 name: chia-walletconnect
-description: Telegram Web App for Chia wallet verification via WalletConnect and Sage. Enables cryptographic proof of wallet ownership through signature verification using MintGarden API.
+description: Telegram Web App for Chia wallet verification via WalletConnect and Sage. Enables cryptographic proof of wallet ownership through signature verification using MintGarden API. Fully functional template - verification works, but post-verification logic is yours to implement.
 metadata: {"clawdbot":{"requires":{"bins":["node"]},"install":[]}}
+status: "template"
+version: "1.0.0"
 ---
 
 # Chia WalletConnect Skill
 
+**Status:** ✅ Fully Functional Template  
+**What Works:** Wallet connection, signature generation, signature verification  
+**What's Missing:** Post-verification handler (what to do with verified wallets)
+
 Verify Chia wallet ownership via Telegram using WalletConnect integration with Sage Wallet.
+
+## Important Note
+
+🎯 **This is a working template!** The verification flow is 100% functional - users can connect wallets, sign messages, and signatures are verified. What this skill **doesn't** include is the post-verification logic.
+
+**You need to implement:**
+- What happens after verification succeeds?
+- Where to store verified wallet addresses?
+- What access/permissions to grant?
+- Business logic for your specific use case
+
+See the **Use Cases** section for examples!
 
 ## What It Does
 
