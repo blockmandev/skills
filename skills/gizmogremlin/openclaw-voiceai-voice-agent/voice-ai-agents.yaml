@@ -10,8 +10,8 @@
 # ============================================================================
 
 skill:
-  name: voiceai-agents
-  display_name: "Voice.ai Agents"
+  name: voice.ai-voice-agents
+  display_name: "Voice.ai Voice Agents"
   description: |
     Create, manage, and deploy Voice.ai conversational AI agents.
     Features include agent management, one-click deployment, knowledge base (RAG),
