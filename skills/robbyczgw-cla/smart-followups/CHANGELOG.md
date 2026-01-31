@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integration with Claude Haiku API
   - Proper error handling and validation
 
-- **OpenClaw Integration** (`handler.js`)
+- **Clawdbot Integration** (`handler.js`)
   - `/followups` command support
   - Auto-trigger mode (optional)
   - Channel detection (inline buttons vs text mode)
@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Documentation**
   - README.md: Feature overview and quick start
-  - SKILL.md: Comprehensive OpenClaw integration guide
+  - SKILL.md: Comprehensive Clawdbot integration guide
   - examples.md: Channel-specific output examples
   - INTERNAL.md: Architecture and design decisions
   - QUICKSTART.md: 5-minute setup guide

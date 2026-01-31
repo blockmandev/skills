@@ -1,10 +1,10 @@
 /**
  * Smart Follow-ups Handler
  * 
- * Integrates with OpenClaw to generate follow-up suggestions using
+ * Integrates with Clawdbot to generate follow-up suggestions using
  * the current session's model and authentication.
  * 
- * Supports all OpenClaw channels with adaptive formatting:
+ * Supports all Clawdbot channels with adaptive formatting:
  * - Buttons: Telegram, Discord, Slack
  * - Text: Signal, WhatsApp, iMessage, SMS, Matrix, Email
  */

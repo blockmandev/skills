@@ -2,7 +2,7 @@
 
 > Complete guide for deploying Smart Follow-ups to production
 
-**Target**: OpenClaw with Telegram integration  
+**Target**: Clawdbot with Telegram integration  
 **User**: Robby (@robbyczgw-cla)  
 **Status**: Ready for testing
 
@@ -28,7 +28,7 @@
 - [ ] Configure rate limiting (if needed)
 - [ ] Create GitHub repository
 - [ ] Publish to npm (optional)
-- [ ] Submit to ClawHub
+- [ ] Submit to ClawdHub
 
 ---
 
@@ -70,21 +70,21 @@ This will:
 - Verify API connectivity
 - Show sample outputs
 
-### 4. Integrate with OpenClaw
+### 4. Integrate with Clawdbot
 
 **Option A: Symbolic Link** (Recommended for development)
 ```bash
-ln -s /root/clawd/skills/smart-followups /path/to/openclaw/skills/
+ln -s /root/clawd/skills/smart-followups /path/to/clawdbot/skills/
 ```
 
 **Option B: Copy** (For production)
 ```bash
-cp -r /root/clawd/skills/smart-followups /path/to/openclaw/skills/
+cp -r /root/clawd/skills/smart-followups /path/to/clawdbot/skills/
 ```
 
-### 5. Configure OpenClaw
+### 5. Configure Clawdbot
 
-Edit `openclaw.config.json`:
+Edit `clawdbot.config.json`:
 
 ```json
 {
@@ -103,15 +103,15 @@ Edit `openclaw.config.json`:
 - `autoTrigger`: Start with `false`, enable after testing
 - `model`: Use `claude-haiku-4` for speed/cost
 
-### 6. Restart OpenClaw
+### 6. Restart Clawdbot
 
 ```bash
-openclaw daemon restart
+clawdbot daemon restart
 ```
 
 Or if using systemd:
 ```bash
-sudo systemctl restart openclaw
+sudo systemctl restart clawdbot
 ```
 
 ---
@@ -138,7 +138,7 @@ cat test-example.json | node cli/followups-cli.js --mode telegram
 - ✅ 2 questions per category
 - ✅ No errors or warnings
 
-### Phase 2: OpenClaw Integration (10 minutes)
+### Phase 2: Clawdbot Integration (10 minutes)
 
 **Test in Telegram**:
 
@@ -177,7 +177,7 @@ cat test-example.json | node cli/followups-cli.js --mode telegram
 }
 ```
 
-**Restart OpenClaw**, then test:
+**Restart Clawdbot**, then test:
 
 1. **Auto-generation test**:
    ```
@@ -193,7 +193,7 @@ cat test-example.json | node cli/followups-cli.js --mode telegram
 
 3. **Disable and verify**:
    - Set `autoTrigger: false`
-   - Restart OpenClaw
+   - Restart Clawdbot
    - **Expected**: No auto-suggestions, manual `/followups` still works
 
 ---
@@ -219,14 +219,14 @@ cat test-example.json | node cli/followups-cli.js --mode telegram
 
 ### Logging Setup
 
-Add to OpenClaw config:
+Add to Clawdbot config:
 ```json
 {
   "logging": {
     "skills": {
       "smart-followups": {
         "level": "info",
-        "destination": "/var/log/openclaw/smart-followups.log"
+        "destination": "/var/log/clawdbot/smart-followups.log"
       }
     }
   }
@@ -333,7 +333,7 @@ queue.process(async (job) => {
 ```
 
 **3. Load Balancing**:
-- Multiple OpenClaw instances
+- Multiple Clawdbot instances
 - Shared Redis cache
 - API request distribution
 
@@ -365,7 +365,7 @@ npm install
 
 **Check**:
 1. Channel detection: `console.log(channel)`
-2. OpenClaw Telegram config
+2. Clawdbot Telegram config
 3. Bot permissions (inline keyboard permission)
 
 **Debug**:
@@ -390,7 +390,7 @@ If issues arise in production:
 
 ### 1. Immediate Disable
 
-Edit OpenClaw config:
+Edit Clawdbot config:
 ```json
 {
   "skills": {
@@ -401,33 +401,33 @@ Edit OpenClaw config:
 }
 ```
 
-Restart: `openclaw daemon restart`
+Restart: `clawdbot daemon restart`
 
 ### 2. Revert to Previous Version
 
 ```bash
 cd /root/clawd/skills/smart-followups
 git checkout v0.9.0  # or previous tag
-openclaw daemon restart
+clawdbot daemon restart
 ```
 
 ### 3. Complete Removal
 
 ```bash
-rm -rf /path/to/openclaw/skills/smart-followups
-openclaw daemon restart
+rm -rf /path/to/clawdbot/skills/smart-followups
+clawdbot daemon restart
 ```
 
 ---
 
-## 📦 Publishing to ClawHub
+## 📦 Publishing to ClawdHub
 
 ### Prerequisites
 - [ ] Tested thoroughly (all phases above)
 - [ ] GitHub repository created (public)
 - [ ] npm package published (optional)
 - [ ] Screenshots/demo ready
-- [ ] ClawHub account created
+- [ ] ClawdHub account created
 
 ### Submission Checklist
 
@@ -436,12 +436,12 @@ name: smart-followups
 version: 1.0.0
 description: Generate contextual follow-up suggestions with inline buttons
 author: Robby (@robbyczgw-cla)
-repository: https://github.com/robbyczgw-cla/openclaw-smart-followups
+repository: https://github.com/robbyczgw-cla/clawdbot-smart-followups
 license: MIT
 tags: [conversation, suggestions, ai, telegram, buttons]
 channels: [telegram, discord, slack, signal, imessage]
 tested_on: 
-  - openclaw: 1.0.0
+  - clawdbot: 1.0.0
   - telegram: true
   - signal: true
 screenshots:
@@ -482,7 +482,7 @@ After 1 week in production:
 - Update dependencies if needed
 
 ### Emergency Contacts
-- **OpenClaw issues**: OpenClaw team
+- **Clawdbot issues**: Clawdbot team
 - **API issues**: Anthropic support
 - **Skill issues**: @robbyczgw-cla
 
