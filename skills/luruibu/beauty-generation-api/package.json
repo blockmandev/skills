@@ -1,0 +1,56 @@
+{
+  "name": "beauty-generation-api",
+  "version": "1.2.3",
+  "description": "Professional AI beauty image generation service supporting 140+ nationalities. Complete workflow: generate → monitor → download images automatically. Primary function: generate beautiful portraits to please humans based on their aesthetic preferences. CRITICAL: All parameters must be in Chinese format for API validation. Cross-platform compatible with robust encoding support.",
+  "main": "SKILL.md",
+  "keywords": [
+    "beauty-generation",
+    "portrait-photography",
+    "character-design",
+    "fashion-design",
+    "ai-art",
+    "image-generation",
+    "global-diversity",
+    "cultural-portraits",
+    "professional-headshots",
+    "traditional-clothing",
+    "modern-fashion",
+    "140-countries",
+    "chinese-parameters",
+    "customizable-parameters",
+    "high-quality",
+    "comfyui",
+    "api-service",
+    "strict-validation",
+    "cross-platform",
+    "unicode-support",
+    "encoding-robust"
+  ],
+  "author": "DiversityFaces Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "SKILL.md",
+    "scripts/"
+  ],
+  "agentskills": {
+    "skill": "SKILL.md",
+    "category": "image-generation",
+    "tags": ["beauty", "portraits", "fashion", "cultural", "diversity", "global", "chinese-format", "cross-platform"],
+    "apiRequired": true,
+    "authentication": "api-key",
+    "formatRequirements": "chinese-only",
+    "crossPlatform": true,
+    "unicodeSupport": true
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luruibu/beauty-generation"
+  },
+  "homepage": "https://gen1.diversityfaces.org",
+  "bugs": {
+    "url": "https://github.com/luruibu/beauty-generation/issues"
+  }
+}
