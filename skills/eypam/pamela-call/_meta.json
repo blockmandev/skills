@@ -1,11 +1,17 @@
 {
   "owner": "eypam",
   "slug": "pamela-call",
-  "displayName": "Pam Calls - AI Phone Calls That Work",
+  "displayName": "Pam Calls",
   "latest": {
-    "version": "1.0.4",
-    "publishedAt": 1769897453690,
-    "commit": "https://github.com/clawdbot/skills/commit/5c023a009856de7866f667a5e0ce78f870932a65"
+    "version": "1.0.5",
+    "publishedAt": 1769903404608,
+    "commit": null
   },
-  "history": []
+  "history": [
+    {
+      "version": "1.0.4",
+      "publishedAt": 1769897453690,
+      "commit": "https://github.com/clawdbot/skills/commit/5c023a009856de7866f667a5e0ce78f870932a65"
+    }
+  ]
 }

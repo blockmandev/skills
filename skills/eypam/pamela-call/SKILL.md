@@ -13,6 +13,7 @@ The only voice AI that actually works with native phone tree navigation.
 - Demo: https://demo.thisispamela.com/
 - Example: https://github.com/ThisIsPamela/demo
 - API: https://api.thisispamela.com
+- Live Support: https://discord.gg/8qG32Nzv
 
 ## Getting Your API Key
 
@@ -43,6 +44,8 @@ npm install @thisispamela/react @thisispamela/sdk
 
 ## Quick Start
 
+**Note**: Phone numbers must be in E.164 format (e.g., `+1234567890`).
+
 JavaScript:
 ```typescript
 import { PamelaClient } from '@thisispamela/sdk';
@@ -50,7 +53,7 @@ import { PamelaClient } from '@thisispamela/sdk';
 const client = new PamelaClient({ apiKey: 'pk_live_...' });
 
 const call = await client.createCall({
-  to: '+1234567890',
+  to: '+1234567890', // E.164 format required
   task: 'Call the pharmacy and check if my prescription is ready',
   voice: 'female',
   agent_name: 'Pamela',
@@ -76,6 +79,15 @@ call = client.create_call(
 status = client.get_call(call["id"])
 print(status["transcript"])
 ```
+
+## Use Cases
+
+- **Appointment Scheduling**: "Call the dentist and schedule a cleaning for next week"
+- **Order Status**: "Call the pharmacy and check if my prescription is ready"
+- **Customer Support**: Navigate IVR menus to reach the right department
+- **Information Gathering**: "Call the restaurant and ask about their vegetarian options"
+- **Follow-ups**: Automate callback reminders and confirmations
+- **IVR Navigation**: Handle complex phone trees, holds, and transfers automatically
 
 ## Key Features
 
