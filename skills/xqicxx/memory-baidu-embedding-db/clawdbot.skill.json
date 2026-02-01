@@ -1,0 +1,70 @@
+{
+  "id": "memory-baidu-embedding-db",
+  "name": "Memory Baidu Embedding DB",
+  "version": "1.0.0",
+  "description": "Vector-Based Memory Storage and Retrieval Using Baidu Embedding Technology",
+  "type": "skill",
+  "category": "memory",
+  "tags": [
+    "memory",
+    "vector-database",
+    "baidu-embedding",
+    "semantic-search",
+    "ai",
+    "nlp",
+    "machine-learning"
+  ],
+  "author": "Clawdbot Community",
+  "license": "MIT",
+  "api": {
+    "version": "1.0.0",
+    "compatibility": ">=1.0.0"
+  },
+  "requirements": {
+    "clawdbot": ">=1.0.0",
+    "python": ">=3.8"
+  },
+  "files": [
+    "memory_baidu_embedding_db.py",
+    "README.md",
+    "SKILL.md",
+    "LICENSE",
+    "API_REFERENCE.md",
+    "ERROR_HANDLING_BEST_PRACTICES.md",
+    "USAGE_GUIDE.md",
+    "TUTORIAL.md",
+    "QUICK_START.md",
+    "memory_skill_full_verification.sh",
+    "memory_skill_startup_check.sh",
+    "memory_health_check.sh",
+    "memory_maintenance.sh",
+    "memory_performance_monitor.sh",
+    "memory_system_comprehensive_guide.md",
+    "MEMORY_SYSTEM_GUIDE.md",
+    "memory_quick_start.md",
+    "model_change_memory_loader.sh",
+    "memory_system_config.json"
+  ],
+  "environment": [
+    {
+      "name": "BAIDU_API_STRING",
+      "description": "Baidu Qianfan API String for embedding generation",
+      "required": true
+    },
+    {
+      "name": "BAIDU_SECRET_KEY",
+      "description": "Baidu Qianfan Secret Key for authentication",
+      "required": true
+    }
+  ],
+  "capabilities": [
+    "memory/storage",
+    "vector/search",
+    "semantic/retrieval"
+  ],
+  "hooks": {
+    "install": "scripts/install.sh",
+    "uninstall": "scripts/uninstall.sh",
+    "verify": "memory_skill_full_verification.sh"
+  }
+}
