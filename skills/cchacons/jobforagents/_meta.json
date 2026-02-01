@@ -1,0 +1,11 @@
+{
+  "owner": "cchacons",
+  "slug": "jobforagents",
+  "displayName": "Job For Agents",
+  "latest": {
+    "version": "1.2.1",
+    "publishedAt": 1769948537848,
+    "commit": null
+  },
+  "history": []
+}
