@@ -1,0 +1,11 @@
+{
+  "owner": "theoseo",
+  "slug": "google-web-search",
+  "displayName": "Google Web Search (Gemini Grounding)",
+  "latest": {
+    "version": "1.0.1",
+    "publishedAt": 1769938416779,
+    "commit": null
+  },
+  "history": []
+}
