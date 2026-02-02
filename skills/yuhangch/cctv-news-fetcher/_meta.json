@@ -1,0 +1,11 @@
+{
+  "owner": "yuhangch",
+  "slug": "cctv-news-fetcher",
+  "displayName": "CCTV News Fetcher",
+  "latest": {
+    "version": "1.0.0",
+    "publishedAt": 1770012122426,
+    "commit": null
+  },
+  "history": []
+}
