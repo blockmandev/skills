@@ -3,11 +3,16 @@
   "slug": "clawback",
   "displayName": "Clawback",
   "latest": {
-    "version": "1.0.14",
-    "publishedAt": 1769976961777,
-    "commit": "https://github.com/clawdbot/skills/commit/ca3ad52e1f450148dd3cb0a13c09d04bcd9ce845"
+    "version": "1.1.0",
+    "publishedAt": 1769981499803,
+    "commit": null
   },
   "history": [
+    {
+      "version": "1.0.14",
+      "publishedAt": 1769976961777,
+      "commit": "https://github.com/clawdbot/skills/commit/ca3ad52e1f450148dd3cb0a13c09d04bcd9ce845"
+    },
     {
       "version": "1.0.1",
       "publishedAt": 1769915664280,
