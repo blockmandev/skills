@@ -3,9 +3,15 @@
   "slug": "file-links-tool",
   "displayName": "File Links Creator",
   "latest": {
-    "version": "1.0.8",
-    "publishedAt": 1769937959126,
-    "commit": "https://github.com/clawdbot/skills/commit/c8ee22d7fb205d55d9b1c4e7ab73407b56e122ff"
+    "version": "1.0.9",
+    "publishedAt": 1770021095534,
+    "commit": null
   },
-  "history": []
+  "history": [
+    {
+      "version": "1.0.8",
+      "publishedAt": 1769937959126,
+      "commit": "https://github.com/clawdbot/skills/commit/c8ee22d7fb205d55d9b1c4e7ab73407b56e122ff"
+    }
+  ]
 }
