@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
-# Context Manager - Automated context management for Clawdbot
+# Context Manager - Automated context management for OpenClaw
 # Detects when context limits approach, compresses history, transfers to new session
 #
-# NOTE: Moltbot has built-in auto-compaction. This script provides:
+# NOTE: OpenClaw has built-in auto-compaction. This script provides:
 #   - Manual summary generation for reference
 #   - Status monitoring
 #   - Transcript extraction
-# See: https://docs.molt.bot/reference/session-management-compaction
 
 set -euo pipefail
 
@@ -57,15 +56,15 @@ check_dependencies() {
         missing+=("jq")
     fi
     
-    if ! command -v clawdbot &>/dev/null; then
-        missing+=("clawdbot")
+    if ! command -v openclaw &>/dev/null; then
+        missing+=("openclaw")
     fi
     
     if [[ ${#missing[@]} -gt 0 ]]; then
         echo -e "${RED}Error: Missing required dependencies: ${missing[*]}${NC}" >&2
         echo "Install with:" >&2
         [[ " ${missing[*]} " =~ " jq " ]] && echo "  brew install jq  # or apt-get install jq" >&2
-        [[ " ${missing[*]} " =~ " clawdbot " ]] && echo "  npm install -g clawdbot" >&2
+        [[ " ${missing[*]} " =~ " openclaw " ]] && echo "  npm install -g openclaw" >&2
         return 1
     fi
     return 0
@@ -105,10 +104,10 @@ EOF
 
 # Get all sessions as JSON
 get_all_sessions() {
-    clawdbot sessions --json 2>/dev/null
+    openclaw sessions --json 2>/dev/null
 }
 
-# Get session info from Clawdbot CLI
+# Get session info from OpenClaw CLI
 # Usage: get_session_info [session_key_or_id]
 #   If no argument: uses most recently updated session
 #   If argument provided: finds session by key or sessionId
@@ -118,7 +117,7 @@ get_session_info() {
     sessions_json=$(get_all_sessions)
 
     if [[ -z "$sessions_json" ]] || [[ "$sessions_json" == "null" ]]; then
-        echo "Warning: Could not fetch sessions from Clawdbot" >&2
+        echo "Warning: Could not fetch sessions from OpenClaw" >&2
         SESSION_ID="unknown"
         SESSION_KEY="unknown"
         AGENT_ID="main"
@@ -165,7 +164,7 @@ get_session_info() {
     MAX_TOKENS=$(echo "$session_data" | jq -r '.contextTokens // 100000')
 
     # Determine session file path
-    local state_dir="${CLAWDBOT_STATE_DIR:-$HOME/.clawdbot}"
+    local state_dir="${OPENCLAW_STATE_DIR:-$HOME/.openclaw}"
     SESSION_FILE="$state_dir/agents/$AGENT_ID/sessions/$SESSION_ID.jsonl"
 
     if [[ ! -f "$SESSION_FILE" ]]; then
@@ -433,7 +432,7 @@ compress_session() {
     local transcript_file="$COMPRESSED_DIR/$session_id.transcript.md"
     local summary_file="$COMPRESSED_DIR/$session_id.summary.md"
     
-    # Fetch actual session transcript from Clawdbot session files
+    # Fetch actual session transcript from OpenClaw session files
     echo "  Fetching session transcript..."
 
     # Get current session info
@@ -493,7 +492,7 @@ EOF
     echo "  - Transcript: $transcript_file"
     echo "  - Summary: $summary_file"
     echo ""
-    echo -e "${YELLOW}NOTE: Moltbot has built-in auto-compaction. Configure with:${NC}"
+    echo -e "${YELLOW}NOTE: OpenClaw has built-in auto-compaction. Configure with:${NC}"
     echo "  compaction: { enabled: true, reserveTokens: 16384, keepRecentTokens: 20000 }"
 
     # Save configuration with updated compression count
@@ -742,7 +741,7 @@ Format this as a clear, structured summary that could be used to continue this w
     # Call the agent with the summarization prompt
     # Note: redirect stderr to /dev/null to avoid Node deprecation warnings breaking JSON
     local response
-    response=$(clawdbot agent --session-id "$SESSION_ID" -m "$prompt" --json 2>/dev/null)
+    response=$(openclaw agent --session-id "$SESSION_ID" -m "$prompt" --json 2>/dev/null)
     local exit_code=$?
     
     if [[ $exit_code -ne 0 ]]; then
@@ -751,7 +750,7 @@ Format this as a clear, structured summary that could be used to continue this w
         return 1
     fi
     
-    # Extract the response text from clawdbot agent --json output
+    # Extract the response text from openclaw agent --json output
     # Structure: { result: { payloads: [{ text: "..." }] } }
     local summary_text
     summary_text=$(echo "$response" | jq -r '.result.payloads[0].text // .message.content[0].text // .content // .text // empty' 2>/dev/null)
@@ -792,7 +791,7 @@ EOF
         echo -e "${YELLOW}🔄 Resetting session and injecting compressed context...${NC}"
         
         local old_session_id="$SESSION_ID"
-        local state_dir="${CLAWDBOT_STATE_DIR:-$HOME/.clawdbot}"
+        local state_dir="${OPENCLAW_STATE_DIR:-$HOME/.openclaw}"
         local jsonl_file="$state_dir/agents/$AGENT_ID/sessions/$SESSION_ID.jsonl"
         
         # Backup the JSONL file before deleting
@@ -827,7 +826,7 @@ Please acknowledge that you have received this compressed context and are ready 
         
         echo "  Injecting compressed context into fresh session..."
         local inject_response
-        inject_response=$(clawdbot agent --to main -m "$context_msg" --json 2>/dev/null)
+        inject_response=$(openclaw agent --to main -m "$context_msg" --json 2>/dev/null)
         
         if [[ $? -eq 0 ]]; then
             # Get the new session info
@@ -945,11 +944,10 @@ case "${1:-list}" in
         echo "  $0 summarize agent:main:main"
         echo "  $0 compress agent:main:slack:channel:c0aaruq2en9"
         echo ""
-        echo "NOTE: Moltbot has built-in auto-compaction. This tool provides:"
+        echo "NOTE: OpenClaw has built-in auto-compaction. This tool provides:"
         echo "  - Manual summary generation for reference"
         echo "  - Status monitoring and transcript extraction"
         echo ""
-        echo "See: https://docs.molt.bot/reference/session-management-compaction"
         exit 0
         ;;
     *)

@@ -1,27 +1,27 @@
 ---
 name: context-manager
-description: AI-powered context management for Clawdbot/Moltbot sessions
+description: AI-powered context management for OpenClaw sessions
 user-invocable: true
 ---
 
 # Context Manager Skill
 
-AI-powered context management for Clawdbot/Moltbot sessions. Uses the agent itself to generate intelligent summaries, then resets the session with compressed context.
+AI-powered context management for OpenClaw sessions. Uses the agent itself to generate intelligent summaries, then resets the session with compressed context.
 
 ## Quick Start
 
 ```bash
 # List all sessions with usage stats
-~/clawd/skills/context-manager/compress.sh list
+~/openclaw/skills/context-manager/compress.sh list
 
 # Check status of a specific session
-~/clawd/skills/context-manager/compress.sh status agent:main:main
+~/openclaw/skills/context-manager/compress.sh status agent:main:main
 
 # Generate AI summary (read-only, safe)
-~/clawd/skills/context-manager/compress.sh summarize agent:main:main
+~/openclaw/skills/context-manager/compress.sh summarize agent:main:main
 
 # Compress session: generate summary, reset, inject (DESTRUCTIVE)
-~/clawd/skills/context-manager/compress.sh summarize agent:main:main --replace
+~/openclaw/skills/context-manager/compress.sh summarize agent:main:main --replace
 ```
 
 ## When to Use
@@ -35,7 +35,7 @@ AI-powered context management for Clawdbot/Moltbot sessions. Uses the agent itse
 
 1. **AI Summarization**: Sends a prompt to the agent asking it to summarize its own context
 2. **Backup**: Saves the original JSONL session file to `memory/compressed/`
-3. **Reset**: Deletes the JSONL file (official reset method per Moltbot docs)
+3. **Reset**: Deletes the JSONL file (official reset method)
 4. **Inject**: Sends the AI-generated summary as the first message in the fresh session
 5. **Result**: Same session key, new session ID, compressed context
 
@@ -69,7 +69,7 @@ AI-powered context management for Clawdbot/Moltbot sessions. Uses the agent itse
 ### List All Sessions
 
 ```bash
-$ ~/clawd/skills/context-manager/compress.sh list
+$ ~/openclaw/skills/context-manager/compress.sh list
 📋 Available Sessions (4 total)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 #    SESSION KEY                              KIND       TOKENS    USAGE
@@ -81,7 +81,7 @@ $ ~/clawd/skills/context-manager/compress.sh list
 ### Check Session Status
 
 ```bash
-$ ~/clawd/skills/context-manager/compress.sh status agent:main:main
+$ ~/openclaw/skills/context-manager/compress.sh status agent:main:main
 📊 Context Manager Status
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   Session Key: agent:main:main
@@ -97,7 +97,7 @@ $ ~/clawd/skills/context-manager/compress.sh status agent:main:main
 ### Generate AI Summary (Safe, Read-Only)
 
 ```bash
-$ ~/clawd/skills/context-manager/compress.sh summarize agent:main:main
+$ ~/openclaw/skills/context-manager/compress.sh summarize agent:main:main
 🧠 Requesting AI summary for session: agent:main:main
   Session ID: fc192a2d-091c-48c7-9fad-12bf34687454
 
@@ -116,7 +116,7 @@ $ ~/clawd/skills/context-manager/compress.sh summarize agent:main:main
 ### Full Compression (Summarize + Reset + Inject)
 
 ```bash
-$ ~/clawd/skills/context-manager/compress.sh summarize agent:main:main --replace
+$ ~/openclaw/skills/context-manager/compress.sh summarize agent:main:main --replace
 🧠 Requesting AI summary for session: agent:main:main
   Session ID: fc192a2d-091c-48c7-9fad-12bf34687454
   Mode: REPLACE (will reset session after summary)
@@ -152,24 +152,24 @@ When compression occurs, these files are created in `memory/compressed/`:
 
 ## Requirements
 
-- **clawdbot/moltbot** - Gateway must be running
+- **openclaw** - Gateway must be running
 - **jq** - JSON parsing (`brew install jq`)
-- **Gateway access** - Script uses `clawdbot agent` and `clawdbot sessions`
+- **Gateway access** - Script uses `openclaw agent` and `openclaw sessions`
 
 ## Technical Details
 
 ### Session Reset Method
 
-The script uses JSONL deletion to reset sessions (official method per Moltbot docs):
+The script uses JSONL deletion to reset sessions (official method):
 
 1. Backup JSONL to `memory/compressed/`
-2. Delete `~/.clawdbot/agents/{agent}/sessions/{sessionId}.jsonl`
-3. Send compressed context via `clawdbot agent --to main`
+2. Delete `~/.openclaw/agents/{agent}/sessions/{sessionId}.jsonl`
+3. Send compressed context via `openclaw agent --to main`
 4. New session is created automatically with summary as first message
 
 ### Why Not /reset?
 
-The `/reset` slash command only works in the chat interface. When sent via `clawdbot agent --session-id`, it's treated as a regular message and the agent tries to interpret it as a task.
+The `/reset` slash command only works in the chat interface. When sent via `openclaw agent --session-id`, it's treated as a regular message and the agent tries to interpret it as a task.
 
 ### AI Summarization Prompt
 
@@ -187,14 +187,14 @@ The script asks the agent to provide:
 If the AI summary extraction fails, check stderr redirect:
 ```bash
 # The script uses 2>/dev/null to avoid Node deprecation warnings breaking JSON
-clawdbot agent --session-id $ID -m "..." --json 2>/dev/null
+openclaw agent --session-id $ID -m "..." --json 2>/dev/null
 ```
 
 ### Session Not Resetting
 
 Verify the JSONL file path:
 ```bash
-ls ~/.clawdbot/agents/main/sessions/
+ls ~/.openclaw/agents/main/sessions/
 ```
 
 ### Restore From Backup
@@ -202,14 +202,14 @@ ls ~/.clawdbot/agents/main/sessions/
 If something goes wrong:
 ```bash
 cp memory/compressed/{timestamp}.session-backup.jsonl \
-   ~/.clawdbot/agents/main/sessions/{sessionId}.jsonl
+   ~/.openclaw/agents/main/sessions/{sessionId}.jsonl
 ```
 
 ### Check Logs
 
-Use `clawdbot logs` to troubleshoot:
+Use `openclaw logs` to troubleshoot:
 ```bash
-clawdbot logs --limit 50 --json | grep -i "error\|fail"
+openclaw logs --limit 50 --json | grep -i "error\|fail"
 ```
 
 ## Best Practices
@@ -221,7 +221,5 @@ clawdbot logs --limit 50 --json | grep -i "error\|fail"
 
 ## See Also
 
-- [Moltbot Session Management](https://docs.molt.bot/concepts/session)
-- [Moltbot Compaction](https://docs.molt.bot/concepts/compaction)
-- `clawdbot sessions --help`
-- `clawdbot agent --help`
+- `openclaw sessions --help`
+- `openclaw agent --help`
