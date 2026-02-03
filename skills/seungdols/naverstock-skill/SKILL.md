@@ -35,6 +35,24 @@ Returns a JSON object with price details.
 }
 ```
 
+### Field Descriptions
+
+- `name`: Stock name.
+- `code`: Stock symbol/code.
+- `price`: Current price in regular market.
+- `change`: Price change in regular market.
+- `changePercent`: Percentage change in regular market.
+- `nxtPrice`: Current price in Nextrade (NXT) Alternative Trading System.
+- `nxtChange`: Price change in Nextrade.
+- `nxtChangePercent`: Percentage change in Nextrade.
+- `currency`: Currency code (e.g., KRW, USD).
+
+### About Nextrade (NXT)
+Nextrade is an Alternative Trading System (ATS) in Korea that offers extended trading hours.
+- **Pre-market**: 08:00 ~ 08:50
+- **After-market**: 15:30 ~ 20:00 (Can be traded until 8 PM)
+- **Note**: Prices in Nextrade (`nxtPrice`) may differ from the regular KRX market price, providing off-hours trading opportunities.
+
 ## Examples
 
 ### Domestic Stock
