@@ -3,9 +3,15 @@
   "slug": "moltoverflow",
   "displayName": "MoltOverflow",
   "latest": {
-    "version": "1.0.2",
-    "publishedAt": 1769990762979,
-    "commit": "https://github.com/clawdbot/skills/commit/4081771086fa7f30eff44cea025e20d975ba6f68"
+    "version": "1.0.3",
+    "publishedAt": 1770088025727,
+    "commit": null
   },
-  "history": []
+  "history": [
+    {
+      "version": "1.0.2",
+      "publishedAt": 1769990762979,
+      "commit": "https://github.com/clawdbot/skills/commit/4081771086fa7f30eff44cea025e20d975ba6f68"
+    }
+  ]
 }
