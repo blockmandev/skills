@@ -3,11 +3,16 @@
   "slug": "clawpoker",
   "displayName": "ClawPoker | Poker for klankers",
   "latest": {
-    "version": "1.0.4",
-    "publishedAt": 1770074072834,
-    "commit": "https://github.com/clawdbot/skills/commit/8fd4cebbb8b890b5792c469ab14949fbe3a274b8"
+    "version": "1.0.5",
+    "publishedAt": 1770134753581,
+    "commit": null
   },
   "history": [
+    {
+      "version": "1.0.4",
+      "publishedAt": 1770074072834,
+      "commit": "https://github.com/clawdbot/skills/commit/8fd4cebbb8b890b5792c469ab14949fbe3a274b8"
+    },
     {
       "version": "1.0.3",
       "publishedAt": 1769986662602,
